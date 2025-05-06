@@ -1,15 +1,12 @@
 import express from 'express';
-const cors = require('cors');
-const dotenv = require('dotenv');
-import userRoutes from './routes/userRoutes'
+import usersRouter from './routes/userRoutes'; // caminho correto para o seu arquivo
 
-dotenv.config();
 const app = express();
-app.use(cors());
 app.use(express.json());
 
-app.use('/users', userRoutes);
+// ✅ Aqui o router é usado corretamente
+app.use('/api', usersRouter);
 
-app.listen(3001, () => {
-  console.log('🚀 Servidor rodando em http://localhost:3001');
+app.listen(3000, () => {
+  console.log('Servidor rodando na porta 3000');
 });
