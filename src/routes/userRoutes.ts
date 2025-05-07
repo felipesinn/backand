@@ -1,19 +1,17 @@
+// routes/userRoutes.ts
 import { Router, Request, Response, NextFunction } from 'express';
-import { createUserHandler, getAllUsersHandler } from '../controller/userController';
+import { createUserHandler, getAllUsersHandler, loginHandler } from '../controller/userController';
 
 const router = Router();
 
-// Wrappers que garantem a compatibilidade de tipos
-const createHandler = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) => {
-    return (req: Request, res: Response, next: NextFunction) => handler(req, res, next);
+// Wrapper para tratar funções async com tipagem segura
+const asyncHandler = (handler: (req: Request, res: Response, next: NextFunction) => Promise<void>) =>
+  (req: Request, res: Response, next: NextFunction) => {
+    handler(req, res, next).catch(next); // garante que erros sejam enviados ao Express
   };
 
-const getAllWrapper = (req: Request, res: Response, next: NextFunction) => {
-  return getAllUsersHandler(req, res, next);
-};
-
-router.post('/users', createHandler(createUserHandler));
-router.get('/users', createHandler(getAllUsersHandler));
+router.post('/users', asyncHandler(createUserHandler));
+router.get('/users', asyncHandler(getAllUsersHandler));
+router.post('/login', asyncHandler(loginHandler));
 
 export default router;
-
